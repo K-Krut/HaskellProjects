@@ -23,4 +23,3 @@ checkRectangleArr arr
 --    let z = arr !! 2
 --    let i = arr !! 3;
 --    checkRectangle x y z i
----

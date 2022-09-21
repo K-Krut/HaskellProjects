@@ -23,7 +23,7 @@ checkPointsTuple :: ((Float, Float), (Float, Float)) -> Bool
 checkPointsTuple tuple = do
      let fstPoint = fst tuple
      let sndPoint = snd tuple
-     fst sndPoint - fst fstPoint == snd
+     fst sndPoint - fst fstPoint == snd sndPoint - snd fstPoint
 
 
 

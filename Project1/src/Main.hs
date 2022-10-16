@@ -51,19 +51,28 @@ checkN x n el
 
 indexed ls = zip ls [1..length ls]
 generateEl x n el = [fst x] ++ (checkN x) n el
-mp ls = concat (map (\x -> generateEl x 3 'X') ls)
-m ls = mp (indexed ls)
+mp ls n el = concat (map (\x -> generateEl x n el) ls)
+m ls n el = mp (indexed ls) n el
+-- m "abcdef" 3 'X'
+-- m [1..9] 3 0
 
-
--- | "abcdf"
--- | mp [('a',1),('b',2),('c',3),('d',4),('e',5),('f',6)]
--- | "abcXdefX"
--- | "abcXdefX"
 
 
 {-
-indexed ls = zip ls [1..length ls]
-generateEl x = [fst x] ++ (checkN x) 3 'X'
-mp ls = concat (map (\x -> generateEl x) ls)
-m ls = mp (indexed ls)
+  indexed ls = zip ls [1..length ls]
+  generateEl x = [fst x] ++ (checkN x) 3 'X'
+  mp ls = concat (map (\x -> generateEl x) ls)
+  m ls = mp (indexed ls)
+
+
+  indexed ls = zip ls [1..length ls]
+  generateEl x n el = [fst x] ++ (checkN x) n el
+  mp ls n el = concat (map (\x -> generateEl x n el) ls)
+  m ls = mp (indexed ls) 3 'X'
+
+
+  -- | "abcdf"
+  -- | mp [('a',1),('b',2),('c',3),('d',4),('e',5),('f',6)]
+  -- | "abcXdefX"
+  -- | "abcXdefX"
 -}

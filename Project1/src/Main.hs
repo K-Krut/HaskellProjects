@@ -86,19 +86,28 @@ m ls n el = mapping (indexed ls) n el
 
 -- 2.12 ----------------------------------------------------------------------------------------------------------------
 
+-- | Функція для перевірки на просте число
+-- >> isPrime2 11
+-- > True
 isPrime2 :: Integer -> Bool
 isPrime2 k = length [ x | x <- [2..k], k `mod` x == 0] == 1
 
+-- | Функція для знаходження першого простого числа в масиві чисел
+-- | з використанням вбудованої функції isPrime з модуля Primes модуля Numbers
+-- >> getPrime [2..11]
+-- > Just 2
 getPrime :: [Integer] -> Maybe Integer
 getPrime list = find isPrime list
 
+
+-- | Функція для знаходження першого простого числа в масиві чисел
+-- | з використанням функції isPrime2
+-- >> getPrime2 [4, 6]
+-- > Nothing
 getPrime2 :: [Integer] -> Maybe Integer
-getPrime2 list = find isPrime2 list
-
-
-
-
-
+getPrime2 [] = Nothing
+getPrime2 (x:xs) | isPrime2 x = Just x
+                 | otherwise = getPrime2 xs
 
 
 
@@ -120,3 +129,4 @@ getPrime2 list = find isPrime2 list
   -- | "abcXdefX"
   -- | "abcXdefX"
 -}
+

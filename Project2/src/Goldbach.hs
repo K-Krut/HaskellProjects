@@ -15,20 +15,20 @@ gb2 a = head $ filter (\(x,y) -> isPr x && isPr y) $
 
 
 --checkTheory n ls (x:xs) = if any (\m -> m + x == n) ls then True else checkTheory n ls xs
-checkTheory :: Int -> [Int] -> [Int] -> Bool
+checkTheory :: Int -> [Int] -> [Int] -> (Int, Int)
 checkTheory n ls (x:xs)
-    | any_ ls n x = True
+    | any_ ls n x /= (0, 0) = any_ ls n x
     | otherwise = checkTheory n ls xs
     where
-      any_ [] n k = False
+      any_ [] n k = (0, 0)
       any_ (x:xs) n k
-          | x + k == n = True
+          | x + k == n = (k, x)
           | otherwise = any_ xs n k
 
-chTh :: Int -> [Int] -> Bool
+chTh :: Int -> [Int] -> (Int, Int)
 chTh n ls
-  | n < 2 = False
-  | odd n = False
+  | n < 2 = (0, 0)
+  | odd n = (0, 0)
   | otherwise = checkTheory n ls ls
 
 
@@ -36,13 +36,13 @@ genPrimes :: Int -> [Int]
 genPrimes n = [i | i <- [2..n], isPr i]
 
 
-gb :: Int -> Bool
+gb :: Int -> (Int, Int)
 gb n = chTh n $ genPrimes n
 
 
 
 
-t = map (\c -> (c, a - c)) [3,5..a `div` 2]
+--t = map (\c -> (c, a - c)) [3,5..a `div` 2]
 
 
 {-

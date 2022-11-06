@@ -3,7 +3,7 @@ module Main (main) where
 
 import Data.List (unfoldr)
 import Data.Maybe (listToMaybe)
-
+--import Data.Numbers.Primes
 
 
 main :: IO ()
@@ -25,9 +25,6 @@ main = do
 
 
 -- 1.12 ----------------------------------------------------------------------------------------------------------------
-
---Functions that take other functions as arguments, or return other functions, are called higher-order functions
---
 
 
 
@@ -55,52 +52,27 @@ spN n xs = (take n xs, drop n xs)
 
 
 
+checkTheory :: Int -> [Int] -> [Int] -> Bool
+checkTheory n ls xs = if any (\x -> x + xs !! 0 == n) ls then True else checkTheory n ls (drop 1 xs)
 
-
-
-
-
---функция фычисляет список всех делителей числа
-factors :: Integer -> [Integer]
-factors n = [k | k <- [1..n], n `mod` k == 0]
-
-
---функция определяет является ли число простым
-isprime :: Integer -> Bool
-isprime n = factors n == [1, n]
-
-
---функция возвращает  список, содержащий все простые числа до числа n включительно
-prs :: Integer -> [Integer]
-prs n = [k | k <- [3..n], factors n == [1, n]]
---prs n = [k | k <- [3..n], isprime k]
-
-
---ch n _ = []
---ch n (x:xs) =
--- [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101]
--- [2, 3, 5, 7]
-
-
-
-k :: Int -> [Int] -> [Int] -> Bool
---k n ls _ = False
---k _ ls xs = False
-k _ _ _ = False
-k n ls xs = if any (\x -> x + ls !! 0 == n ) xs then True else k n (drop 1 ls) xs
---k ls xs = if any (\x -> x + ls !! 0 == 12) xs then True else k (drop 1 ls)
---k ls = if any (\m -> m + take 1 ls == 12) ls then True else k (drop 1 ls)
-
-
-
-
-
-
-{-
-k _ _ _ = False
-k n ls xs =
-  | n < 3 = False
+chTh :: Int -> [Int] -> Bool
+chTh n ls
+  | n < 2 = False
   | odd n = False
-  | otherwise if any (\x -> x + ls !! 0 == n ) xs then True else k (drop 1 ls) xs
--}
+  | otherwise = checkTheory n ls ls
+
+
+is_prime :: Int -> Bool
+is_prime 1 = False
+is_prime 2 = True
+is_prime n | (length [x | x <- [2 .. n-1], mod n x == 0]) > 0 = False
+		       | otherwise = True
+
+genPrimes :: Int -> [Int]
+genPrimes n = [i | i <- [2..n], is_prime i]
+
+
+goldbach :: Int -> Bool
+goldbach n = chTh n $ genPrimes n
+
 

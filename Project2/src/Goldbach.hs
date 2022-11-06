@@ -1,6 +1,3 @@
-func1 :: [a] -> a
-func1 (x:xs) = x
-
 factors a = filter (isFactor a) [2..a-1]
 
 isFactor a b = a `mod` b == 0
@@ -25,6 +22,7 @@ checkTheory n ls (x:xs)
           | x + k == n = (k, x)
           | otherwise = any_ xs n k
 
+
 chTh :: Int -> [Int] -> (Int, Int)
 chTh n ls
   | n < 2 = (0, 0)
@@ -32,12 +30,10 @@ chTh n ls
   | otherwise = checkTheory n ls ls
 
 
-genPrimes :: Int -> [Int]
-genPrimes n = [i | i <- [2..n], isPr i]
-
-
 gb :: Int -> (Int, Int)
 gb n = chTh n $ genPrimes n
+   where
+     genPrimes n = [i | i <- [2..n], isPr i]
 
 
 

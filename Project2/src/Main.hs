@@ -3,8 +3,6 @@ module Main (main) where
 
 import Data.List (unfoldr)
 import Data.Maybe (listToMaybe)
---import Data.Numbers.Primes
-
 
 main :: IO ()
 main = do
@@ -27,52 +25,72 @@ main = do
 -- 1.12 ----------------------------------------------------------------------------------------------------------------
 
 
-
-splitAt' :: Int -> [a] -> ([a], [a])
-splitAt' _  []     = ([], [])
-splitAt' 1  (x:xs) = ([x], xs)
-splitAt' m  (x:xs) = (x:xs', xs'')
-          where
-            (xs', xs'') = splitAt' (m - 1) xs
-
-
-split :: [a] -> ([a], [a])
-split [] = ([], [])
-split (x:xs) = (x:y, z) where (z,y) = split xs
-
-
+-- | Фунція для розбиття списку на дві частини при заданому індексу розбиття -- n
+-- | без використання ФВП
+-- >> splitN 3 "abcdefghj"
+-- > ("abc","defghj")
+--
+-- >> splitN 3 [0..9]
+-- > ([0,1,2],[3,4,5,6,7,8,9])
 splitN :: Int -> [a] -> ([a], [a])
 splitN n list = splitAt n list
 
-
+-- | Фунція для розбиття списку на дві частини при заданому індексу розбиття -- n
+-- | з використанням вбудовинх фцнкцій take та drop
+-- | без використання ФВП
+-- >> spN 3 "abcdefghj"
+-- > ("abc","defghj")
+--
+-- >> spN 3 [0..9]
+-- > ([0,1,2],[3,4,5,6,7,8,9])
 spN n xs = (take n xs, drop n xs)
 
 
+-- | Фунція для індексування списку
+-- | з використанням вбудовинх фцнкцій take та drop
+-- >> index "abcdefghj"
+-- > [('a',1),('b',2),('c',3),('d',4),('e',5),('f',6),('g',7),('h',8),('j',9)]
+index :: [a] -> [(a, Int)]
+index ls = zip ls [1..length ls]
+
+-- | Фунція для деіндексування списку
+-- | з використанням вбудовинх фцнкцій take та drop
+-- >> deindex [('a',1),('b',2),('c',3),('d',4),('e',5),('f',6),('g',7),('h',8),('j',9)]
+-- > "abcdefghj"
+deindex :: [(a, Int)] -> [a]
+deindex [] = []
+deindex ((i,x):xs) = i : deindex xs
+
+
+-- | Фунція для створення списку з перших n елементів заданого списку
+-- >> take_ 4 "abcdefghj"
+-- > "abcd"
+take_ :: Int -> [a] -> [a]
+take_ k _
+    | k <= 0 = []
+take_ _ [] = []
+take_ n list = deindex (takeWhile (\ (x,y) -> y <= n) (index list))
+
+
+-- | Фунція для створення списку з усіх після n перших елементів заданого списку
+-- >> drop_ 4 "abcdefghj"
+-- > "efghj"
+drop_ :: Int -> [a] -> [a]
+drop_ k _
+    | k <= 0 = []
+drop_ _ [] = []
+drop_ n list = deindex (dropWhile (\ (x,y) -> y <= n) (index list))
+
+
+-- | Фунція для розбиття списку на дві частини при заданому індексу розбиття -- n
+-- | з використання ФВП
+-- >> spN2 3 "abcdefghj"
+-- > ("abc","defghj")
+--
+-- >> spN2 3 [0..9]
+-- > ([0,1,2],[3,4,5,6,7,8,9])
+spN2 n xs = (take_ n xs, drop_ n xs)
+
+
+
 -- 2.12 ----------------------------------------------------------------------------------------------------------------
-
-
-
-checkTheory :: Int -> [Int] -> [Int] -> Bool
-checkTheory n ls xs = if any (\x -> x + xs !! 0 == n) ls then True else checkTheory n ls (drop 1 xs)
-
-chTh :: Int -> [Int] -> Bool
-chTh n ls
-  | n < 2 = False
-  | odd n = False
-  | otherwise = checkTheory n ls ls
-
-
-is_prime :: Int -> Bool
-is_prime 1 = False
-is_prime 2 = True
-is_prime n | (length [x | x <- [2 .. n-1], mod n x == 0]) > 0 = False
-		       | otherwise = True
-
-genPrimes :: Int -> [Int]
-genPrimes n = [i | i <- [2..n], is_prime i]
-
-
-goldbach :: Int -> Bool
-goldbach n = chTh n $ genPrimes n
-
-

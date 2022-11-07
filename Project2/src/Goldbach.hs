@@ -1,17 +1,38 @@
+-- | Фунція для отримання дільників числа
+-- | з використання ФВП filter
+-- >> factors 42
+-- > [2,3,6,7,14,21]
 factors a = filter (isFactor a) [2..a-1]
 
+
+-- | Функція для перевірки на дільник цілого числа
+-- >> isPr 11
+-- > True
 isFactor a b = a `mod` b == 0
 
+
+-- | Функція для перевірки на просте число
+-- >> isPr 11
+-- > True
 isPr 1 = False
 isPr a = null $ factors a
 
+
+-- | Фунція для перевірки гіпотези Ґольдбаха
+-- | з використання ФВП filter та map
+-- >> gb2 14
+-- > (3,11)
 gb2 :: Int -> (Int, Int)
 gb2 a = head $ filter (\(x,y) -> isPr x && isPr y) $
                        map (\c -> (c, a - c)) [3,5..a `div` 2]
 
 
 
---checkTheory n ls (x:xs) = if any (\m -> m + x == n) ls then True else checkTheory n ls xs
+
+-- | Фунція для перевірки гіпотези Ґольдбаха
+-- | без використання ФВП
+-- >> checkTheory 14 [2,3,5,7,11,13] [2,3,5,7,11,13]
+-- > (3,11)
 checkTheory :: Int -> [Int] -> [Int] -> (Int, Int)
 checkTheory n ls (x:xs)
     | any_ ls n x /= (0, 0) = any_ ls n x
@@ -23,13 +44,20 @@ checkTheory n ls (x:xs)
           | otherwise = any_ xs n k
 
 
+-- | Фунція для перевірки коректності введеного числа,
+-- | Якщо число задовольняе умови теорії, то повертае функціії перевірки checkTheory
+-- >> chTh 14 [2,3,5,7,11,13]
+-- > (3,11)
 chTh :: Int -> [Int] -> (Int, Int)
 chTh n ls
   | n < 2 = (0, 0)
   | odd n = (0, 0)
   | otherwise = checkTheory n ls ls
 
-
+-- | Фунція для перевірки гіпотези Ґольдбаха
+-- | без використання ФВП
+-- >> gb 14
+-- > (3,11)
 gb :: Int -> (Int, Int)
 gb n = chTh n $ genPrimes n
    where
@@ -38,7 +66,24 @@ gb n = chTh n $ genPrimes n
 
 
 
---t = map (\c -> (c, a - c)) [3,5..a `div` 2]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Варіант інерпретації з ФВП  -- checkTheory n ls (x:xs) = if any (\m -> m + x == n) ls then True else checkTheory n ls xs
 
 
 {-

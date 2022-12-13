@@ -21,7 +21,7 @@ main =  forever $ showMenu "MENU GŁÓWNE"
           ("Kto ma dzisiaj urodziny?", Interface.whoseBirthday),
 	        ("Переглянути зустрічі", Interface.printMeetingsFile),
 	        ("Додати зустріч", Interface.addMeeting),
-		      ("Редагувати зустріч", searchSubmenu Interface.editOrRemoveMeeting),
+		      ("Редагувати зустріч", searchSubmenuMeeting Interface.editOrRemoveMeeting),
           ("Вихід", exitSuccess)]
 
 
@@ -33,6 +33,14 @@ searchSubmenu nextFunction = showMenu "Пошук контактів по:"
                 ("Номер", Interface.find telephone nextFunction),
  		            ("Email", Interface.find mail nextFunction),
      	          ("Дата народження (d.m.rrrr)", Interface.find (printableDate.birthday) nextFunction),
+		            ("<- Повернутись", main)]
+
+-- ******* searchSubmenu *******
+searchSubmenuMeeting nextFunction = showMenu "Пошук контактів по:"
+	              [("Імʼя",  Interface.findM namePlace nextFunction),
+                ("Місце", Interface.findM place nextFunction),
+     	          ("Дата проведення (d.m.rrrr)", Interface.findM (printableDate.dateMeeting) nextFunction),
+		            ("Проведено?", Interface.findM held nextFunction),
 		            ("<- Повернутись", main)]
 
 

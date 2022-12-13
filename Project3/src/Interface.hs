@@ -3,7 +3,8 @@ module Interface (addContact,
 		  printContactsFile,
 		  printMeetingsFile,
 		  printGroup,
-		  find, 
+		  find,
+		  findM,
 		  pressEnter', 
 		  editOrRemoveP,
 		  editOrRemoveMeeting,
@@ -112,17 +113,26 @@ printContactsFile = getBook >>= showBook "Wszystkie kontakty"  >> pressEnter
 printMeetingsFile = getBook >>= showBookM "Meetings"  >> pressEnter
 
 
----- **** WYSZYKIWANIE KONTAKTU****
+
 --find byWhat functionAtEnd = do
 --                                  book <- getBook
 --			                            value <- promptLine "Введіть префікс"
 --			                            showBook "Результат" (Phonebook (findPeopleBy byWhat value book) [] [])
 --			                            functionAtEnd (Phonebook (findPeopleBy byWhat value book) [] [])
--- **** WYSZYKIWANIE KONTAKTU****
+
 find byWhat functionAtEnd= do book <- getBook
 			      value <- promptLine "Podaj prefix"
 			      showBook "WYNIKI" (Phonebook (findPeopleBy byWhat value book) [] [])
 			      functionAtEnd (Phonebook (findPeopleBy byWhat value book) [] [])
+
+
+findM byWhat functionAtEnd = do
+      book <- getBook
+      value <- promptLine "Префікс:"
+      showBook "Результати" (Phonebook [] [] (findMeetingBy byWhat value book))
+      functionAtEnd (Phonebook [] [] (findMeetingBy byWhat value book))
+
+
 
 pressEnter':: Phonebook -> IO ()
 pressEnter' whatever = promptLine "ENTER.." >> return ()
@@ -177,13 +187,22 @@ editContact oldPerson = do book <- getBook
 			   putStrFlush "\t\t\t ---------------> Kontakt został zmieniony!\n" >> pressEnter
 
 
+editMeeting :: Meeting -> IO ()
+editMeeting oldM = do
+      book <- getBook
+      putStrFlush "Podaj nowe dane kontaktu:\n"
+      newM <- getMeetingData
+      saveNewBook $ editMeeting book oldM newM
+      putStrFlush "\t\t\t ---------------> Kontakt został zmieniony!\n" >> pressEnter
+
+
 deleteContact :: Person -> IO ()
 deleteContact personToDel = do book <- getBook
 			       saveNewBook $ removePerson book personToDel
 			       putStrFlush "\t\t\t ---------------> Kontakt został usunięty!\n" >> pressEnter
 
 
---deleteMeeting :: Meeting -> IO ()
+deleteMeeting :: Meeting -> IO ()
 deleteMeeting meetingToDel = do
               book <- getBook
               saveNewBook $ removeMeeting book meetingToDel

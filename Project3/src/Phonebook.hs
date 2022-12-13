@@ -15,7 +15,6 @@ data Phonebook = Phonebook [Person] [Group] [Meeting] deriving (Show, Read)
 addPerson :: Phonebook -> Person -> Phonebook
 addPerson (Phonebook pList gList mList) person = Phonebook (insert person pList) gList mList
 
-
 addMeetingData :: Phonebook -> Meeting -> Phonebook
 addMeetingData (Phonebook pList gList mList) meeting = Phonebook pList gList (insert meeting mList)
 
@@ -25,13 +24,17 @@ removePerson (Phonebook pList gList mList) person = Phonebook (delete person pLi
 removeMeeting :: Phonebook -> Meeting -> Phonebook
 removeMeeting (Phonebook pList gList mList) meeting = Phonebook pList gList (delete meeting  mList)
 
-
 editPerson :: Phonebook -> Person -> Person -> Phonebook 
 editPerson book@(Phonebook pList gList mList) old new = Phonebook (replace pList old new) gList mList
 
+editMeeting :: Phonebook -> Meeting -> Meeting -> Phonebook
+editMeeting book@(Phonebook pList gList mList) old new = Phonebook pList gList (replace mList old new)
 
 findPeopleBy :: (Person -> String) -> String -> Phonebook -> [Person]
 findPeopleBy f value (Phonebook pList _ _) = filter ((isPrefixOf value) . f) pList
+
+findMeetingBy :: (Meeting -> String) -> String -> Phonebook -> [Meeting]
+findMeetingBy f value (Phonebook _ _ mList) = filter ((isPrefixOf value) . f) mList
 
 
 findBirthdayPeople :: Phonebook -> IO [Person]

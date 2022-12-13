@@ -9,15 +9,14 @@ import Phonebook
 tempFile = "temp"
 
 
+
+
 createFname fname = ("db/" ++ fname ++ ".data")
-
-
 
 
 loadBook :: [Char] -> IO Phonebook
 loadBook fname =   do   System.Directory.createDirectoryIfMissing True "db/"
                         handleFile <- openFile ("db/contacts.data") ReadWriteMode
---                        handleFile <- openFile (createFname fname) ReadWriteMode
                         idata <- loadData handleFile
                         return idata
 

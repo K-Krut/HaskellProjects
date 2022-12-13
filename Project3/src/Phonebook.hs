@@ -92,7 +92,7 @@ replace list old new
   | old `elem` list  = if (compare old new) == EQ
 			  then result
 			  else sort result
-  | otherwise = error "Próba wymiany nieistniejącego elementu listy"
+  | otherwise = error "Елемента не існує"
   where
     result = beginning ++ new : ending
     beginning = take position list

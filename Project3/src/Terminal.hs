@@ -6,21 +6,19 @@ import Person
 import Meeting
 
 
--- wypis i flush stdout
 putStrFlush str =  do  putStr str
                        hFlush stdout
 
--- promptLine - zachęta i pobranie lini                       
+
 promptLine what =   do  putStrFlush $ what ++ ": "
                         x <- System.IO.getLine
                         return x
 
--- prompt - zacheta i pobranie tekstu od uzytkownika, sprawdza poprawnosc i ewentualnie dopiero zwraca wynik
--- wejscie: tekst zachety, predykat sprawdzający poprawnosc wejscia
+
 prompt' :: Read b => [Char] -> (b -> Bool) -> IO b
 prompt' text f =    do  putStrFlush $ text ++ ": "
-                        x <- try readLn :: (Read t0) => IO (Either SomeException t0) --Jerzy: ciekawe.
-                        case x of -- Jerzy: hmm czy takie casy zwalniaja z uzycia catch?
+                        x <- try readLn :: (Read t0) => IO (Either SomeException t0)
+                        case x of
                             Left e  ->  invalid
                             Right v ->  if (f v) then return v
                                         else invalid
@@ -87,16 +85,6 @@ showBookM title (Phonebook pList gList mList) =
 	    comment = "Назва  |  Місце  |  Дата  |  Проведено?"
 
 
---showBook title (Phonebook pList gList mList) =
---    do  putStrLn $ "\n" ++ createLabel title 100 '-'
---        putStrFlush $ " *) " ++ comment ++ "\n"
---        putStrFlush $ bookText pList 1
---        putStrLn $ createLabel "-" 100 '-'
---        where
---            bookText [] _ = []
---            bookText (i:is) inum = " " ++ (show inum) ++ ") " ++ (printablePerson i)++ "\n" ++ bookText is (inum + 1)
---	    comment = "Імʼя | Фамілія | #Телефону | День народження | Група"
---
 
 
 pressEnter = promptLine "Wcisnij ENTER aby kontynuowac.." >> return ()

@@ -113,13 +113,6 @@ printContactsFile = getBook >>= showBook "Wszystkie kontakty"  >> pressEnter
 printMeetingsFile = getBook >>= showBookM "Meetings"  >> pressEnter
 
 
-
---find byWhat functionAtEnd = do
---                                  book <- getBook
---			                            value <- promptLine "Введіть префікс"
---			                            showBook "Результат" (Phonebook (findPeopleBy byWhat value book) [] [])
---			                            functionAtEnd (Phonebook (findPeopleBy byWhat value book) [] [])
-
 find byWhat functionAtEnd= do book <- getBook
 			      value <- promptLine "Podaj prefix"
 			      showBook "WYNIKI" (Phonebook (findPeopleBy byWhat value book) [] [])
@@ -160,7 +153,7 @@ editOrRemoveP matchingGuysBook = do persona <- whoFromResultsToEdit matchingGuys
 								    2 -> deleteContact persona
 								    3 -> return ()
 
---
+
 editOrRemoveMeeting matchingMeetings = do
       meeting <- whoFromResultsToEditM matchingMeetings
       editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) Відмінити\n "  (\c -> c `elem` [1,2])
@@ -171,11 +164,6 @@ editOrRemoveMeeting matchingMeetings = do
                 3 -> return ()
 
 
---editOrRemoveMeeting matchingMeetings = do deleteMeeting whoFromResultsToEditM matchingMeetings
---
---editOrRemoveMeeting matchingMeetings = do
---                                                meeting <- whoFromResultsToEditM matchingMeetings
---				                                        deleteMeeting meeting
 
 editContact :: Person -> IO ()
 editContact oldPerson = do book <- getBook

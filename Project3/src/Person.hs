@@ -10,15 +10,14 @@ type FamilyName = String
 type Telephone = String
 type Birthday = Maybe Date
 
-type Group = String
 
 
 data Person = Person {
   name :: Name, 
   familyName :: FamilyName,
   telephone :: Telephone,
-  birthday :: Birthday,
-  groups :: [Group]}  deriving (Show, Read)
+  birthday :: Birthday
+  }  deriving (Show, Read)
   
 
 instance Ord Person where
@@ -35,11 +34,7 @@ instance Eq Person where
 
 
 printablePerson :: Person -> String
-printablePerson p = concat $ intersperse " " [name p, familyName p, telephone p, printableDate (birthday p), printableGroups p]
-
-
-printableGroups :: Person -> String
-printableGroups p = concat $ intersperse ", " (groups p)
+printablePerson p = concat $ intersperse " " [name p, familyName p, telephone p, printableDate (birthday p)]
 
 
 hasBirthday :: Date -> Person  -> Bool
@@ -51,31 +46,4 @@ hasBirthday (Date date) person
   day = toInteger d
   
 
-
-joinGroup :: Group -> Person -> Person
-joinGroup g p 
-  | not (g `elem` (groups p)) = p { groups = newGroupList }
-  | otherwise = p 
-  where
-   newGroupList = insert g (groups p)
-      
-
-
-leaveGroup :: Group -> Person -> Person
-leaveGroup g p = p { groups = newGroupList } where
-  newGroupList = delete g (groups p)
-  
-
-changeGroup :: Group -> Group -> Person -> Person
-changeGroup old new person 
-  | old `elem` gp	= person { groups = 
-    if not $ new `elem` gp
-	 then changed
-	 else oldDeleted
-  }
-  | otherwise = person
-    where
-      changed = insert new oldDeleted
-      oldDeleted = delete old gp
-      gp = groups person
       

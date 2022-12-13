@@ -13,11 +13,9 @@ import Date
 
 main =  forever $ showMenu "Меню"
 	       [("Переглянути контакти", Interface.printContactsFile),
-		      ("Переглянути групи",  Interface.printGroup),
 		      ("Пошук контактів за даними", searchSubmenu Interface.pressEnter'),
 		      ("Додати контакт", Interface.addContact),
 		      ("Редагувати контакт", searchSubmenu Interface.editOrRemoveP),
-          ("Редагувати групу", groupsSubmenu),
           ("У кого сьогодні день народження?", Interface.whoseBirthday),
 	        ("Переглянути зустрічі", Interface.printMeetingsFile),
 	        ("Додати зустріч", Interface.addMeeting),
@@ -43,12 +41,3 @@ searchSubmenuMeeting nextFunction = showMenu "Пошук зустрічей по
 		            ("<- Повернутись", main)]
 
 
-groupsSubmenu= showMenu "Меню Груп"
-	       [("Додати групу", Interface.newGroup),
-		      ("Переглянути існуючі групи", Interface.printAllGroups),
-		      ("Додати контакт до групи", searchSubmenu Interface.addPerToGr),
-		      ("Видалити контакт з групи", searchSubmenu Interface.removePerFromGr),
-          ("Змінити назву групи", Interface.groupChangeName),
-		      ("Обʼєднати 2 групи", Interface.sumGroups),
-          ("Видалити групу", Interface.removeGroup),
-          ("<- Повернутись", main)]

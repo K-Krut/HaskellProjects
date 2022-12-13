@@ -24,7 +24,7 @@ loadBook fname =   do   System.Directory.createDirectoryIfMissing True "db/"
 
 loadData handleFile = do isEof <- hIsEOF handleFile
 	                 if isEof then
-	                     return (Phonebook [] [] [])
+	                     return (Phonebook [] [])
 	                 else do
 	                     contents <- hGetContents handleFile
 	                     return (read (contents)::Phonebook)

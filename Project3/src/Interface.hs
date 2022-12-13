@@ -2,19 +2,11 @@ module Interface (addContact,
       addMeeting,
 		  printContactsFile,
 		  printMeetingsFile,
-		  printGroup,
 		  find,
 		  findM,
 		  pressEnter', 
 		  editOrRemoveP,
 		  editOrRemoveMeeting,
-		  newGroup, 
-		  printAllGroups,
-		  addPerToGr,
-		  removePerFromGr,
-		  groupChangeName,
-		  sumGroups,
-		  removeGroup,
 		  whoseBirthday) where
 
 
@@ -42,13 +34,9 @@ getPerson book num = (getPList book) !! (num - 1)
 
 getMeeting book num = (getMList book) !! (num - 1)
 
-getPList (Phonebook pList gList mList) = pList
+getPList (Phonebook pList mList) = pList
 
-getMList (Phonebook pList gList mList) = mList
-
-getGList :: Phonebook -> [Group]
-getGList (Phonebook pList gList mList) = gList
-
+getMList (Phonebook pList mList) = mList
 
 
 addContact :: IO ()
@@ -64,7 +52,7 @@ getPersonData = do
 	        familyName <- promptString' "Фамілія" validName
 		telephone  <- promptString' "# Телефону" validPhone
 		birthday  <- promptString' "Дата народження (dd.mm.rrrr)" validDate
-		return $ Person name familyName telephone (stringToDate birthday) []
+		return $ Person name familyName telephone (stringToDate birthday)
 
 
 addMeeting :: IO ()
@@ -100,12 +88,6 @@ validDate :: String -> Bool
 validDate x = x == "" || (isJust $ stringToDate x)
 
 
-printGroup = do book <- getBook
-		groupName <- promptLine "Назва групи"
-		showBook "Контакти в групі" $ (Phonebook (findPeopleInGroup book groupName) [] [])
-		pressEnter
-
-
 printContactsFile = getBook >>= showBook "Контакти"  >> pressEnter
 
 printMeetingsFile = getBook >>= showBookM "Зустрічі"  >> pressEnter
@@ -113,15 +95,15 @@ printMeetingsFile = getBook >>= showBookM "Зустрічі"  >> pressEnter
 
 find byWhat functionAtEnd= do book <- getBook
 			      value <- promptLine "Префікс:"
-			      showBook "Результати" (Phonebook (findPeopleBy byWhat value book) [] [])
-			      functionAtEnd (Phonebook (findPeopleBy byWhat value book) [] [])
+			      showBook "Результати" (Phonebook (findPeopleBy byWhat value book) [])
+			      functionAtEnd (Phonebook (findPeopleBy byWhat value book) [])
 
 
 findM byWhat functionAtEnd = do
       book <- getBook
       value <- promptLine "Префікс:"
-      showBook "Результати" (Phonebook [] [] (findMeetingBy byWhat value book))
-      functionAtEnd (Phonebook [] [] (findMeetingBy byWhat value book))
+      showBook "Результати" (Phonebook [] (findMeetingBy byWhat value book))
+      functionAtEnd (Phonebook [] (findMeetingBy byWhat value book))
 
 
 
@@ -193,56 +175,8 @@ deleteMeeting meetingToDel = do
               putStrFlush "---------------> Контакт змінено\n" >> pressEnter
 
 
-newGroup = do book <- getBook
-	      group <- promptLine "Введіть назву групи"
-	      saveNewBook $ addGroup book group
-
-
-printAllGroups = do book <- getBook
-		    showItems "Існуючі групи" $ getGList book
-		    pressEnter
-
-
-addPerToGr matchingGuysBook= do persona <- whoFromResultsToEdit matchingGuysBook
-				book <- getBook
-				group <- promptString' "До якої групи додати контакт" (\x -> x `elem` (getGList book))
-				saveNewBook $ addPersonToGroup book persona group
-				pressEnter
-
-
-removePerFromGr matchingGuysBook = do persona <- whoFromResultsToEdit matchingGuysBook
-				      book <- getBook
-	   			      group <- promptLine "З якої групи видалити"
-				      saveNewBook $ removePersonFromGroup book persona group
-				      pressEnter
-
-
-removeGroup = do book <- getBook
-		 group <- promptLine "Введіть назву групи"
-		 if group `elem` getGList book
-			then do saveNewBook $ deleteGroup book group
-				putStrFlush "Групу видалено\n" >>pressEnter
-			else putStrFlush "Такої групи не існує\n" >> pressEnter
-
-
-
-groupChangeName = do book <- getBook
-		     groupToChange <- promptString' "Введіть назву групи" (\g -> g `elem` getGList book)
-		     newGroup <- promptString' "Нова назва" (\g -> not (g `elem` getGList book))
-		     saveNewBook $ renameGroup book groupToChange newGroup
-		     pressEnter
-
-
-
-sumGroups =  do book <- getBook
-		group1 <- promptString' "Введіть назву групи" (\g -> g `elem` getGList book)
-		group2 <- promptString' "Назва групи для зʼєднання" (\g -> g `elem` getGList book)
-		saveNewBook $ mergeGroups book group1 group2
-		pressEnter
-
-
 whoseBirthday = do book <- getBook
 		   listP <- findBirthdayPeople book
-		   showBook "Сьогодні день народження" (Phonebook listP [] [])
+		   showBook "Сьогодні день народження" (Phonebook listP [])
 		   pressEnter
 

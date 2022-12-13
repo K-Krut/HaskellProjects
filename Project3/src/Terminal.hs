@@ -58,23 +58,19 @@ showItemsAndComment title itemsList  comment =
             menuText (i:is) inum = " " ++ (show inum) ++ ") " ++ i ++ "\n" ++ menuText is (inum + 1)                                  
 
 
-showBook title (Phonebook pList gList mList) =
+showBook title (Phonebook pList mList) =
     do  putStrLn $ "\n" ++ createLabel title 100 '-'
         putStrFlush $ " *) " ++ comment ++ "\n"
         putStrFlush $ bookText pList 1
-        putStrFlush $ bookTextM mList 1
         putStrLn $ createLabel "-" 100 '-'
         where
             bookText [] _ = []
             bookText (i:is) inum = " " ++ (show inum) ++ ") " ++ (printablePerson i) ++ "\n" ++ bookText is (inum + 1)
-
-            bookTextM [] _ = []
-            bookTextM (i:is) inum = " " ++ (show inum) ++ ") " ++ (printableMeeting i) ++ "\n" ++ bookTextM is (inum + 1)
 	    comment = "Імʼя | Фамілія | #Телефону | День народження | Група"
 
 
 
-showBookM title (Phonebook pList gList mList) =
+showBookM title (Phonebook pList mList) =
     do  putStrLn $ "\n" ++ createLabel title 100 '-'
         putStrFlush $ " *) " ++ comment ++ "\n"
         putStrFlush $ bookTextM mList 1
@@ -83,7 +79,6 @@ showBookM title (Phonebook pList gList mList) =
             bookTextM [] _ = []
             bookTextM (i:is) inum = " " ++ (show inum) ++ ") " ++ (printableMeeting i) ++ "\n" ++ bookTextM is (inum + 1)
 	    comment = "Назва  |  Місце  |  Дата  |  Проведено?"
-
 
 
 

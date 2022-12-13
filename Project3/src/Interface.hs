@@ -1,9 +1,12 @@
 module Interface (addContact,
-		  printContactsFile, 
+      addMeeting,
+		  printContactsFile,
+		  printMeetingsFile,
 		  printGroup,
 		  find, 
 		  pressEnter', 
 		  editOrRemoveP,
+		  editOrRemoveMeeting,
 		  newGroup, 
 		  printAllGroups,
 		  addPerToGr,
@@ -24,6 +27,7 @@ import Data.Char
 import Data.Maybe
 
 
+
 dataFile = "contacts"
 
 
@@ -35,7 +39,11 @@ saveNewBook newBook = DataStorage.overwriteBook newBook dataFile
 
 getPerson book num = (getPList book) !! (num - 1)
 
+getMeeting book num = (getMList book) !! (num - 1)
+
 getPList (Phonebook pList gList mList) = pList
+
+getMList (Phonebook pList gList mList) = mList
 
 getGList :: Phonebook -> [Group]
 getGList (Phonebook pList gList mList) = gList
@@ -58,6 +66,23 @@ getPersonData = do
 		mail  <- promptString' "Adres email" validMail
 		birthday  <- promptString' "Data urodzin(dd.mm.rrrr)" validDate
 		return $ Person name familyName company telephone mail (stringToDate birthday) []
+
+
+addMeeting :: IO ()
+addMeeting = do book <- getBook
+		meetingToAdd <- getMeetingData
+		if not (meetingToAdd `elem` (getMList book))
+		  then saveNewBook $ addMeetingData book meetingToAdd
+		else putStrFlush "Taka osoba już jest w książce, kontakt nie został dodany"
+
+
+getMeetingData = do
+		namePlace <- promptString' "Name" validName
+	        place <- promptString' "Place" validName
+		dateMeeting <- promptString' "Data urodzin(dd.mm.rrrr)" validDate
+		held <- promptLine "Held?"
+		return $ Meeting namePlace place (stringToDate dateMeeting) held
+
 
 
 validName :: String -> Bool
@@ -84,16 +109,23 @@ printGroup = do book <- getBook
 
 printContactsFile = getBook >>= showBook "Wszystkie kontakty"  >> pressEnter
 
+printMeetingsFile = getBook >>= showBookM "Meetings"  >> pressEnter
 
+
+---- **** WYSZYKIWANIE KONTAKTU****
+--find byWhat functionAtEnd = do
+--                                  book <- getBook
+--			                            value <- promptLine "Введіть префікс"
+--			                            showBook "Результат" (Phonebook (findPeopleBy byWhat value book) [] [])
+--			                            functionAtEnd (Phonebook (findPeopleBy byWhat value book) [] [])
 -- **** WYSZYKIWANIE KONTAKTU****
 find byWhat functionAtEnd= do book <- getBook
 			      value <- promptLine "Podaj prefix"
 			      showBook "WYNIKI" (Phonebook (findPeopleBy byWhat value book) [] [])
 			      functionAtEnd (Phonebook (findPeopleBy byWhat value book) [] [])
 
-
 pressEnter':: Phonebook -> IO ()
-pressEnter' whatever = promptLine "Wcisnij ENTER aby kontynuowac.." >> return ()
+pressEnter' whatever = promptLine "ENTER.." >> return ()
 
 
 whoFromResultsToEdit matchingGuysBook = if (inputLength > 1)
@@ -103,14 +135,39 @@ whoFromResultsToEdit matchingGuysBook = if (inputLength > 1)
 							where inputLength = length (getPList matchingGuysBook)
 
 
+whoFromResultsToEditM matchingMeetings = if (inputLength > 1)
+						then do nr <- prompt' "Номер зістрічі"  (\c -> c >= 1 && c <= inputLength)
+							return $ getMeeting matchingMeetings nr
+						else return $ getMeeting matchingMeetings 1
+							where inputLength = length (getMList matchingMeetings)
+
+
 editOrRemoveP matchingGuysBook = do persona <- whoFromResultsToEdit matchingGuysBook
-				    editOrDelete <- prompt' "Dostępne operacje:\n 1) Edycja\n 2) Usunięcie kontaktu \n 3) Anuluj \n Twój wybór"  (\c -> c `elem` [1,2,3])
+				    editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) Відмінити\n "  (\c -> c `elem` [1,2,3])
 				    resultAction editOrDelete persona
 					where resultAction x persona = case x of
 								    1 -> editContact persona
 								    2 -> deleteContact persona
 								    3 -> return ()
 
+--
+editOrRemoveMeeting matchingMeetings = do
+      meeting <- whoFromResultsToEditM matchingMeetings
+      editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) Відмінити\n "  (\c -> c `elem` [1,2])
+      resultAction editOrDelete meeting
+        where resultAction x meeting = case x of
+                1 -> deleteMeeting meeting
+                2 -> return ()
+--       where resultAction x meeting = case x of
+--            1 -> deleteContact meeting
+--            2 -> return ()
+
+
+--editOrRemoveMeeting matchingMeetings = do deleteMeeting whoFromResultsToEditM matchingMeetings
+--
+--editOrRemoveMeeting matchingMeetings = do
+--                                                meeting <- whoFromResultsToEditM matchingMeetings
+--				                                        deleteMeeting meeting
 
 editContact :: Person -> IO ()
 editContact oldPerson = do book <- getBook
@@ -126,6 +183,13 @@ deleteContact personToDel = do book <- getBook
 			       putStrFlush "\t\t\t ---------------> Kontakt został usunięty!\n" >> pressEnter
 
 
+--deleteMeeting :: Meeting -> IO ()
+deleteMeeting meetingToDel = do
+              book <- getBook
+              saveNewBook $ removeMeeting book meetingToDel
+              putStrFlush "\t\t\t ---------------> Kontakt został usunięty!\n" >> pressEnter
+
+
 newGroup = do book <- getBook
 	      group <- promptLine "Введіть назву групи"
 	      saveNewBook $ addGroup book group
@@ -134,7 +198,6 @@ newGroup = do book <- getBook
 printAllGroups = do book <- getBook
 		    showItems "Istniejące grupy" $ getGList book
 		    pressEnter
-
 
 
 addPerToGr matchingGuysBook= do persona <- whoFromResultsToEdit matchingGuysBook
@@ -155,8 +218,8 @@ removeGroup = do book <- getBook
 		 group <- promptLine "Podaj nazwę grupy do usunięcia"
 		 if group `elem` getGList book
 			then do saveNewBook $ deleteGroup book group
-				putStrFlush "Grupa usunieta! \n" >>pressEnter
-			else putStrFlush "Taka grupa nie isnieje \n" >> pressEnter
+				putStrFlush "Grupa usunieta!\n" >>pressEnter
+			else putStrFlush "Taka grupa nie isnieje\n" >> pressEnter
 
 
 
@@ -179,9 +242,4 @@ whoseBirthday = do book <- getBook
 		   listP <- findBirthdayPeople book
 		   showBook "Dzisiaj urodzinki mają:" (Phonebook listP [] [])
 		   pressEnter
-
-
-
-
-
 

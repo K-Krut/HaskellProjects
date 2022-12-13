@@ -13,14 +13,6 @@ createFname fname = ("db/" ++ fname ++ ".data")
 
 
 
---
---loadBook  =   do System.Directory.createDirectoryIfMissing True "db/"
---                        handleFile <- openFile ("db/contacts.data") ReadWriteMode
---                        idata <- loadData handleFile
---                        return idata
-
-
-
 
 loadBook :: [Char] -> IO Phonebook
 loadBook fname =   do   System.Directory.createDirectoryIfMissing True "db/"
@@ -48,11 +40,3 @@ overwriteBook newbook dataFile = do
 		where tempFile' = (createFname tempFile)
 		      dataFile' = (createFname dataFile)
 		      
-
---
---kek = do
---        handleFile <- openFile ("db/contacts.data") ReadWriteMode
---        contents <- hGetContents handleFile
---        kkk <- read (contents)::Phonebook
---        return kkk
-----        return (read (contents)::Phonebook)

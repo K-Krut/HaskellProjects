@@ -15,8 +15,15 @@ data Phonebook = Phonebook [Person] [Group] [Meeting] deriving (Show, Read)
 addPerson :: Phonebook -> Person -> Phonebook
 addPerson (Phonebook pList gList mList) person = Phonebook (insert person pList) gList mList
 
+
+addMeetingData :: Phonebook -> Meeting -> Phonebook
+addMeetingData (Phonebook pList gList mList) meeting = Phonebook pList gList (insert meeting mList)
+
 removePerson :: Phonebook -> Person -> Phonebook
 removePerson (Phonebook pList gList mList) person = Phonebook (delete person pList) gList mList
+
+removeMeeting :: Phonebook -> Meeting -> Phonebook
+removeMeeting (Phonebook pList gList mList) meeting = Phonebook pList gList (delete meeting  mList)
 
 
 editPerson :: Phonebook -> Person -> Person -> Phonebook 
@@ -44,7 +51,8 @@ addGroup book@(Phonebook pList gList mList) newGroup
   | otherwise 			 = book
   where
     newGroupList = insert newGroup gList
-  
+
+
 deleteGroup :: Phonebook -> Group -> Phonebook
 deleteGroup (Phonebook pList gList mList) g = (Phonebook newPersonList newGroupList mList) where
   newPersonList = map (leaveGroup g) pList

@@ -64,12 +64,39 @@ showBook title (Phonebook pList gList mList) =
     do  putStrLn $ "\n" ++ createLabel title 100 '-'
         putStrFlush $ " *) " ++ comment ++ "\n"
         putStrFlush $ bookText pList 1
+        putStrFlush $ bookTextM mList 1
         putStrLn $ createLabel "-" 100 '-'
         where
             bookText [] _ = []
-            bookText (i:is) inum = " " ++ (show inum) ++ ") " ++ (printablePerson i)++ "\n" ++ bookText is (inum + 1)                                  
+            bookText (i:is) inum = " " ++ (show inum) ++ ") " ++ (printablePerson i) ++ "\n" ++ bookText is (inum + 1)
+
+            bookTextM [] _ = []
+            bookTextM (i:is) inum = " " ++ (show inum) ++ ") " ++ (printableMeeting i) ++ "\n" ++ bookTextM is (inum + 1)
 	    comment = "Імʼя | Фамілія | #Телефону | День народження | Група"
 
+
+
+showBookM title (Phonebook pList gList mList) =
+    do  putStrLn $ "\n" ++ createLabel title 100 '-'
+        putStrFlush $ " *) " ++ comment ++ "\n"
+        putStrFlush $ bookTextM mList 1
+        putStrLn $ createLabel "-" 100 '-'
+        where
+            bookTextM [] _ = []
+            bookTextM (i:is) inum = " " ++ (show inum) ++ ") " ++ (printableMeeting i) ++ "\n" ++ bookTextM is (inum + 1)
+	    comment = "Назва  |  Місце  |  Дата  |  Проведено?"
+
+
+--showBook title (Phonebook pList gList mList) =
+--    do  putStrLn $ "\n" ++ createLabel title 100 '-'
+--        putStrFlush $ " *) " ++ comment ++ "\n"
+--        putStrFlush $ bookText pList 1
+--        putStrLn $ createLabel "-" 100 '-'
+--        where
+--            bookText [] _ = []
+--            bookText (i:is) inum = " " ++ (show inum) ++ ") " ++ (printablePerson i)++ "\n" ++ bookText is (inum + 1)
+--	    comment = "Імʼя | Фамілія | #Телефону | День народження | Група"
+--
 
 
 pressEnter = promptLine "Wcisnij ENTER aby kontynuowac.." >> return ()

@@ -17,8 +17,8 @@ type Group = String
 
 data Person = Person {
   name :: Name, 
-  familyName :: FamilyName, 
-  company :: Company, 
+  familyName :: FamilyName,
+  company :: Company,
   telephone :: Telephone, 
   mail :: Mail,
   birthday :: Birthday, 
@@ -34,9 +34,11 @@ instance Ord Person where
     | mail a /= mail b			= compare (mail a) (mail b)
     | otherwise 			= EQ
     
+
 instance Eq Person where
-  (==) a b = mail a == mail b
-    
+  (==) a b = (name a == name b) && (familyName a == familyName b) && (telephone a == telephone b)
+ -- (==) a b = mail a == mail b
+
 
 printablePerson :: Person -> String
 printablePerson p = concat $ intersperse " " [name p, familyName p, company p, telephone p, mail p, printableDate (birthday p), printableGroups p]

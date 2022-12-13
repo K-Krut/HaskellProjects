@@ -56,16 +56,16 @@ addContact = do book <- getBook
 		personToAdd <- getPersonData
 		if not (personToAdd `elem` (getPList book))
 		  then saveNewBook $ addPerson book personToAdd
-		else putStrFlush "Taka osoba już jest w książce, kontakt nie został dodany"
+		else putStrFlush "Такий контакт уже існує"
 
 
 getPersonData = do
-		name <- promptString' "Imię" validName
-	        familyName <- promptString' "Nazwisko" validName
-		company  <- promptLine "Firma"
-		telephone  <- promptString' "Nr telefonu" validPhone
-		mail  <- promptString' "Adres email" validMail
-		birthday  <- promptString' "Data urodzin(dd.mm.rrrr)" validDate
+		name <- promptString' "Імʼя" validName
+	        familyName <- promptString' "Фамілія" validName
+		company  <- promptLine "Компанія"
+		telephone  <- promptString' "# Телефону" validPhone
+		mail  <- promptString' "Email" validMail
+		birthday  <- promptString' "Дата народження (dd.mm.rrrr)" validDate
 		return $ Person name familyName company telephone mail (stringToDate birthday) []
 
 
@@ -74,13 +74,13 @@ addMeeting = do book <- getBook
 		meetingToAdd <- getMeetingData
 		if not (meetingToAdd `elem` (getMList book))
 		  then saveNewBook $ addMeetingData book meetingToAdd
-		else putStrFlush "Taka osoba już jest w książce, kontakt nie został dodany"
+		else putStrFlush "Така зустріч вже існує"
 
 
 getMeetingData = do
-		namePlace <- promptString' "Name" validName
-	        place <- promptString' "Place" validName
-		dateMeeting <- promptString' "Data urodzin(dd.mm.rrrr)" validDate
+		namePlace <- promptString' "Імʼя" validName
+	        place <- promptString' "Місце" validName
+		dateMeeting <- promptString' "Дата (dd.mm.rrrr)" validDate
 		held <- promptLine "Held?"
 		return $ Meeting namePlace place (stringToDate dateMeeting) held
 
@@ -103,19 +103,19 @@ validDate x = x == "" || (isJust $ stringToDate x)
 
 
 printGroup = do book <- getBook
-		groupName <- promptLine "Podaj nazwę grupy"
-		showBook "Kontakty w tej grupie" $ (Phonebook (findPeopleInGroup book groupName) [] [])
+		groupName <- promptLine "Назва групи"
+		showBook "Контакти в групі" $ (Phonebook (findPeopleInGroup book groupName) [] [])
 		pressEnter
 
 
-printContactsFile = getBook >>= showBook "Wszystkie kontakty"  >> pressEnter
+printContactsFile = getBook >>= showBook "Контакти"  >> pressEnter
 
-printMeetingsFile = getBook >>= showBookM "Meetings"  >> pressEnter
+printMeetingsFile = getBook >>= showBookM "Зустрічі"  >> pressEnter
 
 
 find byWhat functionAtEnd= do book <- getBook
-			      value <- promptLine "Podaj prefix"
-			      showBook "WYNIKI" (Phonebook (findPeopleBy byWhat value book) [] [])
+			      value <- promptLine "Префікс:"
+			      showBook "Результати" (Phonebook (findPeopleBy byWhat value book) [] [])
 			      functionAtEnd (Phonebook (findPeopleBy byWhat value book) [] [])
 
 
@@ -132,21 +132,21 @@ pressEnter' whatever = promptLine "ENTER.." >> return ()
 
 
 whoFromResultsToEdit matchingGuysBook = if (inputLength > 1)
-						then do nr <- prompt' "Podaj numer kontaktu do edycji"  (\c -> c >= 1 && c <= inputLength)
+						then do nr <- prompt' "Введи номер"  (\c -> c >= 1 && c <= inputLength)
 							return $ getPerson matchingGuysBook nr
 						else return $ getPerson matchingGuysBook 1
 							where inputLength = length (getPList matchingGuysBook)
 
 
 whoFromResultsToEditM matchingMeetings = if (inputLength > 1)
-						then do nr <- prompt' "Номер зістрічі"  (\c -> c >= 1 && c <= inputLength)
+						then do nr <- prompt' "Номер зустрічі"  (\c -> c >= 1 && c <= inputLength)
 							return $ getMeeting matchingMeetings nr
 						else return $ getMeeting matchingMeetings 1
 							where inputLength = length (getMList matchingMeetings)
 
 
 editOrRemoveP matchingGuysBook = do persona <- whoFromResultsToEdit matchingGuysBook
-				    editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) Відмінити\n "  (\c -> c `elem` [1,2,3])
+				    editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) <---\n "  (\c -> c `elem` [1,2,3])
 				    resultAction editOrDelete persona
 					where resultAction x persona = case x of
 								    1 -> editContact persona
@@ -156,7 +156,7 @@ editOrRemoveP matchingGuysBook = do persona <- whoFromResultsToEdit matchingGuys
 
 editOrRemoveMeeting matchingMeetings = do
       meeting <- whoFromResultsToEditM matchingMeetings
-      editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) Відмінити\n "  (\c -> c `elem` [1,2])
+      editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) <---\n "  (\c -> c `elem` [1,2])
       resultAction editOrDelete meeting
         where resultAction x meeting = case x of
                 1 -> Interface.editMeeting meeting
@@ -167,10 +167,10 @@ editOrRemoveMeeting matchingMeetings = do
 
 editContact :: Person -> IO ()
 editContact oldPerson = do book <- getBook
-			   putStrFlush "Podaj nowe dane kontaktu:\n"
+			   putStrFlush "Введіть нові дані:\n"
 			   newPerson <- getPersonData
 			   saveNewBook $ editPerson book oldPerson newPerson
-			   putStrFlush "\t\t\t ---------------> Kontakt został zmieniony!\n" >> pressEnter
+			   putStrFlush "---------------> Контакт змінено\n" >> pressEnter
 
 
 editMeeting :: Meeting -> IO ()
@@ -179,20 +179,20 @@ editMeeting oldM = do
       putStrFlush "Podaj nowe dane kontaktu:\n"
       newM <- getMeetingData
       saveNewBook $ Phonebook.editMeeting book oldM newM
-      putStrFlush "\t\t\t ---------------> Kontakt został zmieniony!\n" >> pressEnter
+      putStrFlush "---------------> Контакт змінено\n" >> pressEnter
 
 
 deleteContact :: Person -> IO ()
 deleteContact personToDel = do book <- getBook
 			       saveNewBook $ removePerson book personToDel
-			       putStrFlush "\t\t\t ---------------> Kontakt został usunięty!\n" >> pressEnter
+			       putStrFlush "---------------> Контакт змінено\n" >> pressEnter
 
 
 deleteMeeting :: Meeting -> IO ()
 deleteMeeting meetingToDel = do
               book <- getBook
               saveNewBook $ removeMeeting book meetingToDel
-              putStrFlush "\t\t\t ---------------> Kontakt został usunięty!\n" >> pressEnter
+              putStrFlush "---------------> Контакт змінено\n" >> pressEnter
 
 
 newGroup = do book <- getBook
@@ -201,7 +201,7 @@ newGroup = do book <- getBook
 
 
 printAllGroups = do book <- getBook
-		    showItems "Istniejące grupy" $ getGList book
+		    showItems "Існуючі групи" $ getGList book
 		    pressEnter
 
 
@@ -220,31 +220,31 @@ removePerFromGr matchingGuysBook = do persona <- whoFromResultsToEdit matchingGu
 
 
 removeGroup = do book <- getBook
-		 group <- promptLine "Podaj nazwę grupy do usunięcia"
+		 group <- promptLine "Введіть назву групи"
 		 if group `elem` getGList book
 			then do saveNewBook $ deleteGroup book group
-				putStrFlush "Grupa usunieta!\n" >>pressEnter
-			else putStrFlush "Taka grupa nie isnieje\n" >> pressEnter
+				putStrFlush "Групу видалено\n" >>pressEnter
+			else putStrFlush "Такої групи не існує\n" >> pressEnter
 
 
 
 groupChangeName = do book <- getBook
-		     groupToChange <- promptString' "Podaj nazwę istniejącej grupy do zmiany" (\g -> g `elem` getGList book)
-		     newGroup <- promptString' "Podaj nową nazwę (inną niż istniejące)" (\g -> not (g `elem` getGList book))
+		     groupToChange <- promptString' "Введіть назву групи" (\g -> g `elem` getGList book)
+		     newGroup <- promptString' "Нова назва" (\g -> not (g `elem` getGList book))
 		     saveNewBook $ renameGroup book groupToChange newGroup
 		     pressEnter
 
 
 
 sumGroups =  do book <- getBook
-		group1 <- promptString' "Podaj nazwę istniejącej grupy która ma zostać włączona do innej" (\g -> g `elem` getGList book)
-		group2 <- promptString' "Podaj nazwę drugiej istniejącej grupy do scalenia" (\g -> g `elem` getGList book)
+		group1 <- promptString' "Введіть назву групи" (\g -> g `elem` getGList book)
+		group2 <- promptString' "Назва групи для зʼєднання" (\g -> g `elem` getGList book)
 		saveNewBook $ mergeGroups book group1 group2
 		pressEnter
 
 
 whoseBirthday = do book <- getBook
 		   listP <- findBirthdayPeople book
-		   showBook "Dzisiaj urodzinki mają:" (Phonebook listP [] [])
+		   showBook "Сьогодні день народження" (Phonebook listP [] [])
 		   pressEnter
 

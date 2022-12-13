@@ -22,7 +22,7 @@ prompt' text f =    do  putStrFlush $ text ++ ": "
                             Left e  ->  invalid
                             Right v ->  if (f v) then return v
                                         else invalid
-  where invalid = putStrFlush "Błąd, spróbuj jeszcze raz: " >> prompt' text f
+  where invalid = putStrFlush "Помилка, спробуй ще раз: " >> prompt' text f
 	
 	
 
@@ -30,7 +30,7 @@ promptString' :: [Char] -> ([Char] -> Bool) -> IO [Char]
 promptString' text f =    do  putStrFlush $ text ++ ": "
                               x <- getLine
                               if ( f x ) then return x
-					 else  putStrFlush "Błąd, spróbuj jeszcze raz: " >> promptString' text f
+					 else  putStrFlush "Помилка, спробуй ще раз: " >> promptString' text f
 
 
 
@@ -87,7 +87,7 @@ showBookM title (Phonebook pList gList mList) =
 
 
 
-pressEnter = promptLine "Wcisnij ENTER aby kontynuowac.." >> return ()
+pressEnter = promptLine "ENTER <--" >> return ()
 
 
 

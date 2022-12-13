@@ -38,12 +38,6 @@ printableMeeting :: Meeting -> String
 printableMeeting p = concat $ intersperse " " [namePlace p, place p, printableDate (dateMeeting p), held p]
 
 
-todayMeeting :: Date -> Meeting -> Bool
-todayMeeting (Date date) meeting
-  | isNothing $ dateMeeting meeting 	= False
-  | otherwise 				= isAnniversary (fromJust $ dateMeeting meeting) day month where
-  (_, m, d) = toGregorian date
-  month = toInteger m
-  day = toInteger d
+
 
 

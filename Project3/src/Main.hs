@@ -10,22 +10,22 @@ import Meeting
 import Date
 
 
--- **********  main menu  ***********
-main =  forever $ showMenu "MENU GŁÓWNE" 
+
+main =  forever $ showMenu "Меню"
 	       [("Переглянути контакти", Interface.printContactsFile),
 		      ("Переглянути групи",  Interface.printGroup),
 		      ("Пошук контактів за даними", searchSubmenu Interface.pressEnter'),
 		      ("Додати контакт", Interface.addContact),
 		      ("Редагувати контакт", searchSubmenu Interface.editOrRemoveP),
           ("Редагувати групу", groupsSubmenu),
-          ("Kto ma dzisiaj urodziny?", Interface.whoseBirthday),
+          ("У кого сьогодні день народження?", Interface.whoseBirthday),
 	        ("Переглянути зустрічі", Interface.printMeetingsFile),
 	        ("Додати зустріч", Interface.addMeeting),
 		      ("Редагувати зустріч", searchSubmenuMeeting Interface.editOrRemoveMeeting),
           ("Вихід", exitSuccess)]
 
 
--- ******* searchSubmenu *******
+
 searchSubmenu nextFunction = showMenu "Пошук контактів по:"
 	              [("Імʼя",  Interface.find name nextFunction),
                 ("Фамілія", Interface.find familyName nextFunction),
@@ -35,8 +35,9 @@ searchSubmenu nextFunction = showMenu "Пошук контактів по:"
      	          ("Дата народження (d.m.rrrr)", Interface.find (printableDate.birthday) nextFunction),
 		            ("<- Повернутись", main)]
 
--- ******* searchSubmenu *******
-searchSubmenuMeeting nextFunction = showMenu "Пошук контактів по:"
+
+
+searchSubmenuMeeting nextFunction = showMenu "Пошук зустрічей по:"
 	              [("Імʼя",  Interface.findM namePlace nextFunction),
                 ("Місце", Interface.findM place nextFunction),
      	          ("Дата проведення (d.m.rrrr)", Interface.findM (printableDate.dateMeeting) nextFunction),
@@ -44,8 +45,7 @@ searchSubmenuMeeting nextFunction = showMenu "Пошук контактів по
 		            ("<- Повернутись", main)]
 
 
--- ********* groupsSubmenu **********
-groupsSubmenu= showMenu "EDYCJA GRUP" 
+groupsSubmenu= showMenu "Меню Груп"
 	       [("Додати групу", Interface.newGroup),
 		      ("Переглянути існуючі групи", Interface.printAllGroups),
 		      ("Додати контакт до групи", searchSubmenu Interface.addPerToGr),

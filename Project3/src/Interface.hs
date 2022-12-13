@@ -166,11 +166,9 @@ editOrRemoveMeeting matchingMeetings = do
       editOrDelete <- prompt' "Опції:\n 1) Редагувати\n 2) Видалити\n 3) Відмінити\n "  (\c -> c `elem` [1,2])
       resultAction editOrDelete meeting
         where resultAction x meeting = case x of
-                1 -> deleteMeeting meeting
-                2 -> return ()
---       where resultAction x meeting = case x of
---            1 -> deleteContact meeting
---            2 -> return ()
+                1 -> Interface.editMeeting meeting
+                2 -> deleteMeeting meeting
+                3 -> return ()
 
 
 --editOrRemoveMeeting matchingMeetings = do deleteMeeting whoFromResultsToEditM matchingMeetings
@@ -192,7 +190,7 @@ editMeeting oldM = do
       book <- getBook
       putStrFlush "Podaj nowe dane kontaktu:\n"
       newM <- getMeetingData
-      saveNewBook $ editMeeting book oldM newM
+      saveNewBook $ Phonebook.editMeeting book oldM newM
       putStrFlush "\t\t\t ---------------> Kontakt został zmieniony!\n" >> pressEnter
 
 

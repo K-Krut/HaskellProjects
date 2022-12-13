@@ -7,9 +7,7 @@ import Date
 
 type Name = String
 type FamilyName = String
-type Company = String
 type Telephone = String
-type Mail = String
 type Birthday = Maybe Date
 
 type Group = String
@@ -18,10 +16,8 @@ type Group = String
 data Person = Person {
   name :: Name, 
   familyName :: FamilyName,
-  company :: Company,
-  telephone :: Telephone, 
-  mail :: Mail,
-  birthday :: Birthday, 
+  telephone :: Telephone,
+  birthday :: Birthday,
   groups :: [Group]}  deriving (Show, Read)
   
 
@@ -31,17 +27,15 @@ instance Ord Person where
     | familyName a /= familyName b 	= compare (familyName a) (familyName b)
     | name a /= name b			= compare (name a) (name b)
     | birthday a /= birthday b		= compare (birthday a) (birthday b)
-    | mail a /= mail b			= compare (mail a) (mail b)
     | otherwise 			= EQ
     
 
 instance Eq Person where
   (==) a b = (name a == name b) && (familyName a == familyName b) && (telephone a == telephone b)
- -- (==) a b = mail a == mail b
 
 
 printablePerson :: Person -> String
-printablePerson p = concat $ intersperse " " [name p, familyName p, company p, telephone p, mail p, printableDate (birthday p), printableGroups p]
+printablePerson p = concat $ intersperse " " [name p, familyName p, telephone p, printableDate (birthday p), printableGroups p]
 
 
 printableGroups :: Person -> String

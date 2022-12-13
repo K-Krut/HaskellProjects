@@ -29,9 +29,7 @@ main =  forever $ showMenu "Меню"
 searchSubmenu nextFunction = showMenu "Пошук контактів по:"
 	              [("Імʼя",  Interface.find name nextFunction),
                 ("Фамілія", Interface.find familyName nextFunction),
-                ("Компанія", Interface.find company nextFunction),
                 ("Номер", Interface.find telephone nextFunction),
- 		            ("Email", Interface.find mail nextFunction),
      	          ("Дата народження (d.m.rrrr)", Interface.find (printableDate.birthday) nextFunction),
 		            ("<- Повернутись", main)]
 

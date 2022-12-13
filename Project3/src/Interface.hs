@@ -62,11 +62,9 @@ addContact = do book <- getBook
 getPersonData = do
 		name <- promptString' "Імʼя" validName
 	        familyName <- promptString' "Фамілія" validName
-		company  <- promptLine "Компанія"
 		telephone  <- promptString' "# Телефону" validPhone
-		mail  <- promptString' "Email" validMail
 		birthday  <- promptString' "Дата народження (dd.mm.rrrr)" validDate
-		return $ Person name familyName company telephone mail (stringToDate birthday) []
+		return $ Person name familyName telephone (stringToDate birthday) []
 
 
 addMeeting :: IO ()

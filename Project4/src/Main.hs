@@ -1,12 +1,10 @@
 module Main (main) where
 
--- Import the necessary modules
 import System.IO
 import Control.Monad
 import System.Directory
 import Data.List.Split
 import Data.List
---import Data.List.Split
 
 
 createName name = "data/" ++ name ++ ".txt"
@@ -25,24 +23,33 @@ promptLine  = do
       return x
 
 
-splitN n list = Data.List.splitAt n list
-
+splitN n xs = (take n xs, drop n xs)
 
 splitLine inputData = splitOn " " inputData
 
 convertToInt index = read index :: Int
+
+toStr ls = "(" ++ fst ls ++ ", " ++ snd ls ++ ")"
 
 splitData inputData = do
       let ls = splitLine inputData
       let ind_ = ls !! 1
       let str_ = ls !! 0
       let index  = convertToInt ind_
-      let result = splitN index str_
-      return result
+      let ls = splitN index str_
+      let kek = show ls
+      return kek
 
+writeResult inputData = do
+      let res = splitData inputData
+      let result = res >>= show
+      writeToFile result
 
 printToScreen inputData = do
-  putStrLn $ show splitData inputData
+  let result = splitData inputData
+  result >>= putStrLn
+
+readInput n = read n :: String
 
 
 main :: IO ()
@@ -61,10 +68,10 @@ main = do
   putStrLn "Choose output method: [1] Screen, [2] File"
   outputMethod <- getLine
 
-
   case outputMethod of
-    "1" -> splitData inputData
-    "2" -> writeFile "data/output.txt" inputData
+    "1" -> printToScreen $ readInput inputData
+    "2" -> writeResult $ readInput inputData
+--    "2" -> writeFile "data/output.txt" inputData
     _   -> error "Invalid input method"
 
 
@@ -72,3 +79,4 @@ main = do
   putStrLn "Enter [1] to continue or [2] to exit"
   continue <- getLine
   when (continue /= "2") main
+

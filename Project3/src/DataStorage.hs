@@ -38,4 +38,3 @@ overwriteBook newbook dataFile = do
 	  else renameFile tempFile' dataFile'
 		where tempFile' = (createFname tempFile)
 		      dataFile' = (createFname dataFile)
-		      

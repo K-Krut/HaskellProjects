@@ -39,5 +39,3 @@ searchSubmenuMeeting nextFunction = showMenu "Пошук зустрічей по
      	          ("Дата проведення (d.m.rrrr)", Interface.findM (printableDate.dateMeeting) nextFunction),
 		            ("Проведено?", Interface.findM held nextFunction),
 		            ("<- Повернутись", main)]
-
-

@@ -92,6 +92,3 @@ showMenu title actionList = do  showItems title [fst i | i <- actionList]
                                 snd $ actionList !! (choice - 1)  
 
 
-
-
- 

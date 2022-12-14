@@ -37,7 +37,3 @@ instance Eq Meeting where
 printableMeeting :: Meeting -> String
 printableMeeting p = concat $ intersperse " " [namePlace p, place p, printableDate (dateMeeting p), held p]
 
-
-
-
-
